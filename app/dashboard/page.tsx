@@ -47,13 +47,15 @@ export default function DashboardPage() {
     setVendasHoje(vendas?.length || 0)
     setFaturamentoHoje(faturamento)
 
-    const { data: perdas, error: erroPerdas } =
-      await supabase
-        .from('movimentacoes_estoque')
-        .select('quantidade, criado_em')
-        .eq('tipo', 'perda')
-        .gte('criado_em', inicioHoje.toISOString())
-        .lt('criado_em', inicioAmanha.toISOString())
+    const {
+      data: perdas,
+      error: erroPerdas,
+    } = await supabase
+      .from('movimentacoes_estoque')
+      .select('quantidade, criado_em')
+      .eq('tipo', 'perda')
+      .gte('criado_em', inicioHoje.toISOString())
+      .lt('criado_em', inicioAmanha.toISOString())
 
     if (erroPerdas) {
       console.error(erroPerdas)
@@ -68,14 +70,16 @@ export default function DashboardPage() {
 
     setPerdasHoje(quantidadePerdida)
 
-    const { count, error: erroProdutos } =
-      await supabase
-        .from('produtos')
-        .select('*', {
-          count: 'exact',
-          head: true,
-        })
-        .eq('ativo', true)
+    const {
+      count,
+      error: erroProdutos,
+    } = await supabase
+      .from('produtos')
+      .select('*', {
+        count: 'exact',
+        head: true,
+      })
+      .eq('ativo', true)
 
     if (erroProdutos) {
       console.error(erroProdutos)
@@ -96,7 +100,9 @@ export default function DashboardPage() {
         <Navigation />
 
         <div className="page-container">
-          <p>Carregando painel...</p>
+          <div className="loading">
+            Carregando painel...
+          </div>
         </div>
       </main>
     )
@@ -107,30 +113,36 @@ export default function DashboardPage() {
       <Navigation />
 
       <div className="page-container">
+
+        {/* CABEÇALHO */}
         <section>
           <p
             style={{
               margin: 0,
-              color: 'var(--roxo)',
+              color: 'var(--azul)',
               fontWeight: 700,
               fontSize: 14,
             }}
           >
-            ✨ Painel da loja
+            🏪 Mercearia Nicolau
           </p>
 
           <h1 className="page-title">
-            Olá! 💜
+            Olá! 👋
           </h1>
 
           <p className="page-subtitle">
-            Aqui está o resumo das vendas de hoje.
+            Aqui está o resumo da sua mercearia hoje.
           </p>
         </section>
 
+        {/* INDICADORES */}
         <section className="stats-grid">
+
           <div className="stat-card">
-            <div className="stat-icon">🛒</div>
+            <div className="stat-icon">
+              🛒
+            </div>
 
             <p className="stat-label">
               Vendas hoje
@@ -142,7 +154,9 @@ export default function DashboardPage() {
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon">💰</div>
+            <div className="stat-icon">
+              💰
+            </div>
 
             <p className="stat-label">
               Faturamento
@@ -156,10 +170,12 @@ export default function DashboardPage() {
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon">🍫</div>
+            <div className="stat-icon">
+              📦
+            </div>
 
             <p className="stat-label">
-              Produtos
+              Produtos ativos
             </p>
 
             <strong className="stat-value">
@@ -168,7 +184,9 @@ export default function DashboardPage() {
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon">⚠️</div>
+            <div className="stat-icon">
+              ⚠️
+            </div>
 
             <p className="stat-label">
               Perdas hoje
@@ -178,14 +196,18 @@ export default function DashboardPage() {
               {perdasHoje}
             </strong>
           </div>
+
         </section>
 
+        {/* AÇÕES RÁPIDAS */}
         <section style={{ marginTop: 38 }}>
+
           <h2 className="section-title">
-            Ações rápidas ✨
+            Ações rápidas
           </h2>
 
           <div className="quick-actions">
+
             <a
               href="/vendas"
               className="quick-action primary"
@@ -219,8 +241,10 @@ export default function DashboardPage() {
                 Conferir produtos e movimentações
               </span>
             </a>
+
           </div>
         </section>
+
       </div>
     </main>
   )

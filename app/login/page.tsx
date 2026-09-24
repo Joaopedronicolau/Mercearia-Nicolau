@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(false)
 
-  async function fazerLogin(event: FormEvent) {
+  async function entrar(event: FormEvent) {
     event.preventDefault()
 
     setErro('')
@@ -26,32 +26,41 @@ export default function LoginPage() {
 
     if (error) {
       console.error(error)
-      setErro('E-mail ou senha incorretos.')
+
+      setErro(
+        'E-mail ou senha incorretos.'
+      )
+
       setCarregando(false)
       return
     }
 
     router.push('/dashboard')
-    router.refresh()
   }
 
   return (
     <main className="login-page">
+
       <div className="login-card">
+
+        {/* LOGO */}
         <div className="login-logo">
-          🍫
+          🏪
         </div>
 
-        <h1 className="login-title">
-          MK Doces
+        <h1>
+          Mercearia Nicolau
         </h1>
 
         <p className="login-subtitle">
-          Entre para acessar a loja 💜
+          Entre para acessar o sistema
         </p>
 
-        <form onSubmit={fazerLogin}>
+        {/* FORMULÁRIO */}
+        <form onSubmit={entrar}>
+
           <div className="input-group">
+
             <label className="input-label">
               E-mail
             </label>
@@ -64,11 +73,14 @@ export default function LoginPage() {
                 setEmail(event.target.value)
               }
               placeholder="seu@email.com"
+              autoComplete="email"
               required
             />
+
           </div>
 
           <div className="input-group">
+
             <label className="input-label">
               Senha
             </label>
@@ -81,31 +93,36 @@ export default function LoginPage() {
                 setSenha(event.target.value)
               }
               placeholder="Digite sua senha"
+              autoComplete="current-password"
               required
             />
+
           </div>
 
           {erro && (
-            <div className="message">
+            <div className="login-error">
               {erro}
             </div>
           )}
 
           <button
             type="submit"
-            className="button button-primary"
+            className="button button-primary login-button"
             disabled={carregando}
-            style={{
-              width: '100%',
-              marginTop: 8,
-            }}
           >
             {carregando
               ? 'Entrando...'
               : 'Entrar'}
           </button>
+
         </form>
+
+        <p className="login-footer">
+          Sistema de gestão da Mercearia Nicolau
+        </p>
+
       </div>
+
     </main>
   )
 }

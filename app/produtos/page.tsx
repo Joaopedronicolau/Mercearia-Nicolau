@@ -41,7 +41,9 @@ export default function ProdutosPage() {
 
     if (error) {
       console.error(error)
-      setMensagem('Não foi possível carregar os produtos.')
+      setMensagem(
+        'Não foi possível carregar os produtos.'
+      )
       setCarregando(false)
       return
     }
@@ -66,7 +68,7 @@ export default function ProdutosPage() {
     setNome(produto.nome)
     setPreco(String(produto.preco))
     setEstoqueInicial('')
-    
+
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
@@ -86,7 +88,11 @@ export default function ProdutosPage() {
       return
     }
 
-    if (!preco || Number.isNaN(precoNumero) || precoNumero < 0) {
+    if (
+      !preco ||
+      Number.isNaN(precoNumero) ||
+      precoNumero < 0
+    ) {
       setMensagem('Digite um preço válido.')
       return
     }
@@ -104,12 +110,16 @@ export default function ProdutosPage() {
 
       if (error) {
         console.error(error)
-        setMensagem('Não foi possível atualizar o produto.')
+        setMensagem(
+          'Não foi possível atualizar o produto.'
+        )
         setSalvando(false)
         return
       }
 
-      setMensagem('Produto atualizado com sucesso! 💜')
+      setMensagem(
+        'Produto atualizado com sucesso! ✓'
+      )
     } else {
       const estoqueNumero =
         estoqueInicial === ''
@@ -142,7 +152,11 @@ export default function ProdutosPage() {
 
       if (error || !novoProduto) {
         console.error(error)
-        setMensagem('Não foi possível cadastrar o produto.')
+
+        setMensagem(
+          'Não foi possível cadastrar o produto.'
+        )
+
         setSalvando(false)
         return
       }
@@ -168,15 +182,20 @@ export default function ProdutosPage() {
           await carregarProdutos()
           limparFormulario()
           setSalvando(false)
+
           return
         }
       }
 
-      setMensagem('Produto cadastrado com sucesso! 🍫')
+      setMensagem(
+        'Produto cadastrado com sucesso! ✓'
+      )
     }
 
     limparFormulario()
+
     await carregarProdutos()
+
     setSalvando(false)
   }
 
@@ -192,50 +211,58 @@ export default function ProdutosPage() {
 
     if (error) {
       console.error(error)
+
       setMensagem(
         'Não foi possível alterar o status do produto.'
       )
+
       return
     }
 
     setMensagem(
       novoStatus
-        ? 'Produto ativado com sucesso! 💜'
+        ? 'Produto ativado com sucesso! ✓'
         : 'Produto desativado com sucesso.'
     )
 
     await carregarProdutos()
   }
 
-  const produtosFiltrados = produtos.filter((produto) => {
-    const correspondeBusca =
-      produto.nome
-        .toLowerCase()
-        .includes(busca.toLowerCase())
+  const produtosFiltrados = produtos.filter(
+    (produto) => {
+      const correspondeBusca =
+        produto.nome
+          .toLowerCase()
+          .includes(busca.toLowerCase())
 
-    const correspondeFiltro =
-      filtro === 'todos' ||
-      (filtro === 'ativos' && produto.ativo) ||
-      (filtro === 'inativos' && !produto.ativo)
+      const correspondeFiltro =
+        filtro === 'todos' ||
+        (filtro === 'ativos' && produto.ativo) ||
+        (filtro === 'inativos' && !produto.ativo)
 
-    return correspondeBusca && correspondeFiltro
-  })
+      return (
+        correspondeBusca && correspondeFiltro
+      )
+    }
+  )
 
   return (
     <main>
       <Navigation />
 
       <div className="page-container">
+
+        {/* CABEÇALHO */}
         <section>
           <p
             style={{
               margin: 0,
-              color: 'var(--roxo)',
+              color: 'var(--azul)',
               fontWeight: 700,
               fontSize: 14,
             }}
           >
-            🍫 Catálogo da loja
+            🏪 Mercearia Nicolau
           </p>
 
           <h1 className="page-title">
@@ -243,11 +270,14 @@ export default function ProdutosPage() {
           </h1>
 
           <p className="page-subtitle">
-            Cadastre, edite e controle os produtos vendidos.
+            Cadastre, edite e controle os produtos
+            da mercearia.
           </p>
         </section>
 
+        {/* FORMULÁRIO */}
         <section className="card product-form-card">
+
           <div
             style={{
               display: 'flex',
@@ -272,8 +302,8 @@ export default function ProdutosPage() {
                     fontSize: 13,
                   }}
                 >
-                  O estoque atual não é alterado aqui.
-                  Use o controle de estoque.
+                  O estoque atual não é alterado
+                  aqui. Use o controle de estoque.
                 </p>
               )}
             </div>
@@ -290,7 +320,9 @@ export default function ProdutosPage() {
           </div>
 
           <form onSubmit={salvarProduto}>
+
             <div className="product-form-grid">
+
               <div className="input-group">
                 <label className="input-label">
                   Nome do produto
@@ -303,7 +335,7 @@ export default function ProdutosPage() {
                   onChange={(event) =>
                     setNome(event.target.value)
                   }
-                  placeholder="Ex.: Brigadeiro"
+                  placeholder="Ex.: Arroz 5kg"
                   required
                 />
               </div>
@@ -348,6 +380,7 @@ export default function ProdutosPage() {
                   />
                 </div>
               )}
+
             </div>
 
             <button
@@ -361,6 +394,7 @@ export default function ProdutosPage() {
                 ? 'Salvar alterações'
                 : 'Cadastrar produto'}
             </button>
+
           </form>
 
           {mensagem && (
@@ -368,9 +402,12 @@ export default function ProdutosPage() {
               {mensagem}
             </div>
           )}
+
         </section>
 
+        {/* PRODUTOS CADASTRADOS */}
         <section style={{ marginTop: 35 }}>
+
           <div
             style={{
               display: 'flex',
@@ -380,6 +417,7 @@ export default function ProdutosPage() {
               flexWrap: 'wrap',
             }}
           >
+
             <div>
               <h2 className="section-title">
                 Produtos cadastrados
@@ -387,6 +425,7 @@ export default function ProdutosPage() {
             </div>
 
             <div className="product-filters">
+
               <button
                 type="button"
                 className={
@@ -394,7 +433,9 @@ export default function ProdutosPage() {
                     ? 'button button-primary'
                     : 'button button-secondary'
                 }
-                onClick={() => setFiltro('ativos')}
+                onClick={() =>
+                  setFiltro('ativos')
+                }
               >
                 Ativos
               </button>
@@ -406,7 +447,9 @@ export default function ProdutosPage() {
                     ? 'button button-primary'
                     : 'button button-secondary'
                 }
-                onClick={() => setFiltro('todos')}
+                onClick={() =>
+                  setFiltro('todos')
+                }
               >
                 Todos
               </button>
@@ -418,13 +461,18 @@ export default function ProdutosPage() {
                     ? 'button button-primary'
                     : 'button button-secondary'
                 }
-                onClick={() => setFiltro('inativos')}
+                onClick={() =>
+                  setFiltro('inativos')
+                }
               >
                 Inativos
               </button>
+
             </div>
+
           </div>
 
+          {/* BUSCA */}
           <div className="input-group">
             <input
               className="input"
@@ -437,9 +485,12 @@ export default function ProdutosPage() {
             />
           </div>
 
+          {/* CARREGANDO */}
           {carregando ? (
             <p>Carregando produtos...</p>
+
           ) : produtosFiltrados.length === 0 ? (
+
             <div className="card">
               <p
                 style={{
@@ -450,15 +501,22 @@ export default function ProdutosPage() {
                 Nenhum produto encontrado.
               </p>
             </div>
+
           ) : (
+
             <div className="product-management-grid">
+
               {produtosFiltrados.map((produto) => (
+
                 <div
                   key={produto.id}
                   className="product-management-card"
                 >
+
                   <div className="product-management-top">
+
                     <div>
+
                       <h3 className="product-management-name">
                         {produto.nome}
                       </h3>
@@ -469,6 +527,7 @@ export default function ProdutosPage() {
                           .toFixed(2)
                           .replace('.', ',')}
                       </p>
+
                     </div>
 
                     <span
@@ -482,17 +541,23 @@ export default function ProdutosPage() {
                         ? 'Ativo'
                         : 'Inativo'}
                     </span>
+
                   </div>
 
                   <div className="product-management-stock">
-                    <span>Estoque atual</span>
+
+                    <span>
+                      Estoque atual
+                    </span>
 
                     <strong>
                       {produto.estoque} un.
                     </strong>
+
                   </div>
 
                   <div className="product-management-actions">
+
                     <button
                       type="button"
                       className="button button-secondary"
@@ -518,12 +583,19 @@ export default function ProdutosPage() {
                         ? 'Desativar'
                         : 'Ativar'}
                     </button>
+
                   </div>
+
                 </div>
+
               ))}
+
             </div>
+
           )}
+
         </section>
+
       </div>
     </main>
   )

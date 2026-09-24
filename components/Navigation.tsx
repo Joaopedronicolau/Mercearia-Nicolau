@@ -1,157 +1,199 @@
 'use client'
 
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 export default function Navigation() {
   const router = useRouter()
   const pathname = usePathname()
 
+  function ativo(path: string) {
+    return pathname === path
+  }
+
   async function sair() {
     await supabase.auth.signOut()
     router.push('/login')
-    router.refresh()
-  }
-
-  function ativo(caminho: string) {
-    return pathname === caminho
   }
 
   return (
     <>
-      {/* MENU DESKTOP */}
-      <header className="desktop-navigation">
+      {/* NAVEGAÇÃO DESKTOP */}
+      <header className="navigation-desktop">
+
         <div className="navigation-container">
 
-          <a
-            href="/dashboard"
-            className="navigation-logo"
+          {/* LOGO */}
+          <button
+            type="button"
+            className="navigation-brand"
+            onClick={() =>
+              router.push('/dashboard')
+            }
           >
-            <div className="navigation-logo-icon">
-              🍫
+            <div className="navigation-logo">
+              🏪
             </div>
 
             <div>
-              <strong>MK Doces</strong>
-              <span>Gestão de vendas</span>
-            </div>
-          </a>
+              <strong>
+                Mercearia Nicolau
+              </strong>
 
+              <span>
+                Gestão de vendas
+              </span>
+            </div>
+          </button>
+
+          {/* LINKS */}
           <nav className="navigation-links">
 
-            <a
-              href="/dashboard"
+            <button
+              type="button"
               className={
                 ativo('/dashboard')
                   ? 'navigation-link active'
                   : 'navigation-link'
               }
-            >
-              🏠 Início
-            </a>
-
-            <a
-              href="/vendas"
-              className={
-                pathname.startsWith('/vendas')
-                  ? 'navigation-link active'
-                  : 'navigation-link'
+              onClick={() =>
+                router.push('/dashboard')
               }
             >
-              🛒 Vendas
-            </a>
-
-            <a
-              href="/produtos"
-              className={
-                pathname.startsWith('/produtos')
-                  ? 'navigation-link active'
-                  : 'navigation-link'
-              }
-            >
-              🍫 Produtos
-            </a>
-
-            <a
-              href="/estoque"
-              className={
-                pathname.startsWith('/estoque')
-                  ? 'navigation-link active'
-                  : 'navigation-link'
-              }
-            >
-              📦 Estoque
-            </a>
+              <span>🏠</span>
+              Início
+            </button>
 
             <button
-              onClick={sair}
-              className="navigation-logout"
+              type="button"
+              className={
+                ativo('/vendas')
+                  ? 'navigation-link active'
+                  : 'navigation-link'
+              }
+              onClick={() =>
+                router.push('/vendas')
+              }
             >
-              Sair
+              <span>🛒</span>
+              Vendas
+            </button>
+
+            <button
+              type="button"
+              className={
+                ativo('/produtos')
+                  ? 'navigation-link active'
+                  : 'navigation-link'
+              }
+              onClick={() =>
+                router.push('/produtos')
+              }
+            >
+              <span>📦</span>
+              Produtos
+            </button>
+
+            <button
+              type="button"
+              className={
+                ativo('/estoque')
+                  ? 'navigation-link active'
+                  : 'navigation-link'
+              }
+              onClick={() =>
+                router.push('/estoque')
+              }
+            >
+              <span>📊</span>
+              Estoque
             </button>
 
           </nav>
+
+          {/* SAIR */}
+          <button
+            type="button"
+            className="navigation-logout"
+            onClick={sair}
+          >
+            <span>↪</span>
+            Sair
+          </button>
+
         </div>
+
       </header>
 
-      
+      {/* NAVEGAÇÃO MOBILE */}
+      <nav className="navigation-mobile">
 
-      {/* MENU INFERIOR MOBILE */}
-      <nav className="mobile-bottom-navigation">
-
-        <a
-          href="/dashboard"
+        <button
+          type="button"
           className={
             ativo('/dashboard')
-              ? 'mobile-nav-link active'
-              : 'mobile-nav-link'
+              ? 'mobile-navigation-link active'
+              : 'mobile-navigation-link'
+          }
+          onClick={() =>
+            router.push('/dashboard')
           }
         >
           <span>🏠</span>
           <small>Início</small>
-        </a>
+        </button>
 
-        <a
-          href="/vendas"
+        <button
+          type="button"
           className={
-            pathname.startsWith('/vendas')
-              ? 'mobile-nav-link active'
-              : 'mobile-nav-link'
+            ativo('/vendas')
+              ? 'mobile-navigation-link active'
+              : 'mobile-navigation-link'
+          }
+          onClick={() =>
+            router.push('/vendas')
           }
         >
           <span>🛒</span>
           <small>Vendas</small>
-        </a>
+        </button>
 
-        <a
-          href="/produtos"
+        <button
+          type="button"
           className={
-            pathname.startsWith('/produtos')
-              ? 'mobile-nav-link active'
-              : 'mobile-nav-link'
+            ativo('/produtos')
+              ? 'mobile-navigation-link active'
+              : 'mobile-navigation-link'
           }
-        >
-          <span>🍫</span>
-          <small>Produtos</small>
-        </a>
-
-        <a
-          href="/estoque"
-          className={
-            pathname.startsWith('/estoque')
-              ? 'mobile-nav-link active'
-              : 'mobile-nav-link'
+          onClick={() =>
+            router.push('/produtos')
           }
         >
           <span>📦</span>
-          <small>Estoque</small>
-        </a>
+          <small>Produtos</small>
+        </button>
 
         <button
-          onClick={sair}
-          className="mobile-nav-link"
+          type="button"
+          className={
+            ativo('/estoque')
+              ? 'mobile-navigation-link active'
+              : 'mobile-navigation-link'
+          }
+          onClick={() =>
+            router.push('/estoque')
+          }
         >
-          <span>🚪</span>
+          <span>📊</span>
+          <small>Estoque</small>
+        </button>
+
+        <button
+          type="button"
+          className="mobile-navigation-link"
+          onClick={sair}
+        >
+          <span>↪</span>
           <small>Sair</small>
         </button>
 

@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'MK Doces',
-  description: 'Sistema de gestão do MK Doces',
+  title: 'Mercearia Nicolau',
+  description: 'Sistema de gestão da Mercearia Nicolau',
 
   icons: {
     icon: '/icon-512.png',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#6f2dbd',
+  themeColor: '#1565C0',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
