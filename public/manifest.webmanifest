@@ -1,0 +1,16 @@
+{
+  "name": "MK Doces",
+  "short_name": "MK Doces",
+  "description": "Sistema de gestão do MK Doces",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#6f2dbd",
+  "theme_color": "#6f2dbd",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
