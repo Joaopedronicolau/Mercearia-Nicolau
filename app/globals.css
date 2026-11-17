@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  font-size: 18px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: #111111;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.card {
+  background: #f7f7f2;
+  border: 1px solid #b9b9ad;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.campo {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #b9b9ad;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 1rem;
+}
+
+.campo:focus {
+  outline: 3px solid #1b5e20;
+  border-color: #1b5e20;
+}
+
+.rotulo {
+  display: block;
+  margin: 10px 0 4px;
+  font-size: 0.9rem;
+  color: #444c44;
+}
+
+.btn {
+  padding: 12px 16px;
+  border: 2px solid #1b5e20;
+  border-radius: 10px;
+  background: #1b5e20;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-g {
+  background: #ffffff;
+  color: #111111;
+  border-color: #8d8d80;
+  font-weight: 600;
+}
+
+.btn-p {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tag-vermelha {
+  background: #fdecea;
+  color: #b71c1c;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tag-amarela {
+  background: #fff4d6;
+  color: #7a4d00;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.erro {
+  background: #fdecea;
+  color: #b71c1c;
+  border: 2px solid #b71c1c;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 10px 0;
+  font-weight: 600;
 }
