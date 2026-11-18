@@ -1,15 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { getSupabase } from '@/lib/supabase'
 import { R, num, type Produto, type Venda } from '@/lib/tipos'
+import ScannerButton from './ScannerButton'
 
 type ItemCarrinho = { produto_id: string; nome: string; quantidade: number; preco: number }
+
+// Ignora zeros à esquerda (o leitor às vezes devolve 12 dígitos em vez de 13)
+const normaliza = (s: string | null | undefined) => (s ?? '').trim().replace(/^0+/, '')
 
 export default function Vender({ produtos, vendas, onChange }: { produtos: Produto[]; vendas: Venda[]; onChange: () => void }) {
   const [produtoId, setProdutoId] = useState('')
   const [qtd, setQtd] = useState('1')
   const [carrinho, setCarrinho] = useState<ItemCarrinho[]>([])
+  const carrinhoRef = useRef<ItemCarrinho[]>([])
   const [fiado, setFiado] = useState(false)
   const [cliente, setCliente] = useState('')
   const [erro, setErro] = useState('')
@@ -21,21 +26,46 @@ export default function Vender({ produtos, vendas, onChange }: { produtos: Produ
   const total = carrinho.reduce((a, i) => a + i.preco * i.quantidade, 0)
   const clientes = Array.from(new Set(vendas.filter((v) => v.fiado && v.cliente).map((v) => v.cliente as string)))
 
+  function guardar(novo: ItemCarrinho[]) {
+    carrinhoRef.current = novo
+    setCarrinho(novo)
+  }
+
+  // Coloca q unidades no carrinho. Devolve uma mensagem de erro, ou null se deu certo.
+  function colocar(p: Produto, q: number): string | null {
+    const atual = carrinhoRef.current
+    const ja = atual.find((i) => i.produto_id === p.id)
+    const soma = q + (ja?.quantidade ?? 0)
+    if (soma > p.quantidade) return `Só tem ${p.quantidade} unidade(s) de ${p.nome} em estoque.`
+    guardar(
+      ja
+        ? atual.map((i) => (i.produto_id === p.id ? { ...i, quantidade: soma } : i))
+        : [...atual, { produto_id: p.id, nome: p.nome, quantidade: q, preco: p.preco_venda }]
+    )
+    return null
+  }
+
   function adicionar() {
     setOk('')
     const q = Math.floor(num(qtd))
     if (!escolhido || q < 1) return setErro('Escolha o produto e a quantidade.')
-    const ja = carrinho.find((i) => i.produto_id === escolhido.id)
-    const soma = q + (ja?.quantidade ?? 0)
-    if (soma > escolhido.quantidade)
-      return setErro(`Só tem ${escolhido.quantidade} unidade(s) de ${escolhido.nome} em estoque.`)
+    const msg = colocar(escolhido, q)
+    if (msg) return setErro(msg)
     setErro('')
-    setCarrinho(
-      ja
-        ? carrinho.map((i) => (i.produto_id === escolhido.id ? { ...i, quantidade: soma } : i))
-        : [...carrinho, { produto_id: escolhido.id, nome: escolhido.nome, quantidade: q, preco: escolhido.preco_venda }]
-    )
     setQtd('1')
+  }
+
+  // Chamado a cada código de barras lido: adiciona 1 unidade e avisa na tela da câmera.
+  function lerCodigo(codigo: string): string {
+    setOk('')
+    setErro('')
+    const alvo = normaliza(codigo)
+    const p = produtos.find((x) => alvo !== '' && normaliza(x.codigo_barras) === alvo)
+    if (!p) return `❌ Código ${codigo} não cadastrado.`
+    const msg = colocar(p, 1)
+    if (msg) return `⚠️ ${msg}`
+    const n = carrinhoRef.current.find((i) => i.produto_id === p.id)?.quantidade ?? 1
+    return `✔ ${p.nome} (${n} no carrinho)`
   }
 
   async function finalizar() {
@@ -52,7 +82,7 @@ export default function Vender({ produtos, vendas, onChange }: { produtos: Produ
     setEnviando(false)
     if (error) return setErro(error.message)
     setOk(fiado ? `Fiado anotado para ${cliente.trim()}.` : 'Venda registrada!')
-    setCarrinho([])
+    guardar([])
     setCliente('')
     setFiado(false)
     onChange()
@@ -61,7 +91,10 @@ export default function Vender({ produtos, vendas, onChange }: { produtos: Produ
   return (
     <section className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-6">
       <div className="card">
-        <b>Adicionar produto à venda</b>
+        <div className="flex items-center justify-between gap-2">
+          <b>Adicionar produto à venda</b>
+          <ScannerButton label="📷 Escanear" onCodigo={lerCodigo} />
+        </div>
         <label className="rotulo">Produto</label>
         <select className="campo" value={escolhido?.id ?? ''} onChange={(e) => setProdutoId(e.target.value)}>
           {grupos.map((g) => (
@@ -86,7 +119,7 @@ export default function Vender({ produtos, vendas, onChange }: { produtos: Produ
             <div className="flex items-center gap-2">
               <b>{R(i.preco * i.quantidade)}</b>
               <button className="btn btn-g btn-p" aria-label={`Tirar ${i.nome}`}
-                onClick={() => setCarrinho(carrinho.filter((x) => x.produto_id !== i.produto_id))}>✕</button>
+                onClick={() => guardar(carrinho.filter((x) => x.produto_id !== i.produto_id))}>✕</button>
             </div>
           </div>
         ))}
@@ -109,7 +142,7 @@ export default function Vender({ produtos, vendas, onChange }: { produtos: Produ
         {ok && <p className="mt-3 font-bold text-green-800">{ok}</p>}
         <div className="mt-3 flex gap-2">
           <button className="btn" onClick={finalizar} disabled={enviando}>{enviando ? 'Registrando…' : 'Finalizar venda'}</button>
-          <button className="btn btn-g" onClick={() => { setCarrinho([]); setErro(''); setOk('') }}>Limpar</button>
+          <button className="btn btn-g" onClick={() => { guardar([]); setErro(''); setOk('') }}>Limpar</button>
         </div>
       </div>
     </section>

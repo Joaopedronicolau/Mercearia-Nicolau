@@ -7,13 +7,15 @@ import Estoque from './Estoque'
 import Vender from './Vender'
 import Fiado from './Fiado'
 import Historico from './Historico'
+import Relatorio from './Relatorio'
 
-type Aba = 'estoque' | 'vender' | 'fiado' | 'historico'
+type Aba = 'estoque' | 'vender' | 'fiado' | 'historico' | 'relatorio'
 const ABAS: { id: Aba; nome: string }[] = [
   { id: 'estoque', nome: 'Estoque' },
   { id: 'vender', nome: 'Vender' },
   { id: 'fiado', nome: 'Fiado' },
   { id: 'historico', nome: 'Histórico' },
+  { id: 'relatorio', nome: 'Relatório' },
 ]
 
 export default function Painel() {
@@ -65,7 +67,7 @@ export default function Painel() {
         <div><b className="block break-words text-base sm:text-xl">{R(fiadoAberto)}</b><span className="text-sm text-gray-700">Fiado em aberto</span></div>
       </div>
 
-      <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
         {ABAS.map((a) => (
           <button key={a.id} onClick={() => setAba(a.id)}
             className={aba === a.id ? 'btn px-1' : 'btn btn-g px-1'}>
@@ -80,6 +82,7 @@ export default function Painel() {
       {aba === 'vender' && <Vender produtos={produtos} vendas={vendas} onChange={carregar} />}
       {aba === 'fiado' && <Fiado vendas={vendas} onChange={carregar} />}
       {aba === 'historico' && <Historico vendas={vendas} onChange={carregar} />}
+      {aba === 'relatorio' && <Relatorio />}
     </main>
   )
 }

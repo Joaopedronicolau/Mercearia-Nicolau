@@ -1,6 +1,7 @@
 export type Produto = {
   id: string
   nome: string
+  codigo_barras?: string | null
   quantidade: number
   estoque_minimo: number
   preco_custo: number

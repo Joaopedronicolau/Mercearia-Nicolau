@@ -12,6 +12,8 @@
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
     "@tailwindcss/postcss": "^4.3.5",
+    "@zxing/browser": "^0.2.1",
+    "@zxing/library": "^0.23.0",
     "next": "16.4.6",
     "postcss": "^8.5.33",
     "react": "19.3.0",
