@@ -61,3 +61,8 @@ export function dataBR(iso: string) {
 export function resumoItens(v: Venda) {
   return v.venda_itens.map((i) => `${i.quantidade}× ${i.nome}`).join(', ')
 }
+
+// Para buscas: ignora acentos e maiúsculas ("Óleo", "oleo" e "OLEO" ficam iguais)
+export function semAcento(s: string) {
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+}

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { getSupabase } from '@/lib/supabase'
-import { R, num, dataBR, diasParaVencer, CATEGORIAS_PADRAO, type Produto } from '@/lib/tipos'
+import { R, num, dataBR, diasParaVencer, semAcento, CATEGORIAS_PADRAO, type Produto } from '@/lib/tipos'
 import ScannerButton from './ScannerButton'
 
 type Form = { nome: string; codigo: string; quantidade: string; minimo: string; custo: string; venda: string; validade: string; categoria: string }
@@ -73,7 +73,7 @@ export default function Estoque({ produtos, onChange }: { produtos: Produto[]; o
   const termo = busca.trim()
   const lista = produtos.filter(
     (p) =>
-      (p.nome.toLowerCase().includes(busca.toLowerCase()) || (termo !== '' && (p.codigo_barras ?? '').includes(termo))) &&
+      (semAcento(p.nome).includes(semAcento(busca)) || (termo !== '' && (p.codigo_barras ?? '').includes(termo))) &&
       (filtro === 'Todas' || p.categoria === filtro)
   )
 
