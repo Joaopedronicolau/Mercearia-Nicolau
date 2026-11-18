@@ -79,7 +79,7 @@ export default function Painel() {
       {aba === 'estoque' && <Estoque produtos={produtos} onChange={carregar} />}
       {aba === 'vender' && <Vender produtos={produtos} vendas={vendas} onChange={carregar} />}
       {aba === 'fiado' && <Fiado vendas={vendas} onChange={carregar} />}
-      {aba === 'historico' && <Historico vendas={vendas} />}
+      {aba === 'historico' && <Historico vendas={vendas} onChange={carregar} />}
     </main>
   )
 }

@@ -17,6 +17,7 @@ export default function Vender({ produtos, vendas, onChange }: { produtos: Produ
   const [enviando, setEnviando] = useState(false)
 
   const escolhido = produtos.find((p) => p.id === (produtoId || produtos[0]?.id))
+  const grupos = Array.from(new Set(produtos.map((p) => p.categoria))).sort()
   const total = carrinho.reduce((a, i) => a + i.preco * i.quantidade, 0)
   const clientes = Array.from(new Set(vendas.filter((v) => v.fiado && v.cliente).map((v) => v.cliente as string)))
 
@@ -63,8 +64,12 @@ export default function Vender({ produtos, vendas, onChange }: { produtos: Produ
         <b>Adicionar produto à venda</b>
         <label className="rotulo">Produto</label>
         <select className="campo" value={escolhido?.id ?? ''} onChange={(e) => setProdutoId(e.target.value)}>
-          {produtos.map((p) => (
-            <option key={p.id} value={p.id}>{p.nome} ({p.quantidade} un.) · {R(p.preco_venda)}</option>
+          {grupos.map((g) => (
+            <optgroup key={g} label={g}>
+              {produtos.filter((p) => p.categoria === g).map((p) => (
+                <option key={p.id} value={p.id}>{p.nome} ({p.quantidade} un.) · {R(p.preco_venda)}</option>
+              ))}
+            </optgroup>
           ))}
         </select>
         <label className="rotulo">Quantidade</label>

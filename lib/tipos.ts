@@ -6,6 +6,7 @@ export type Produto = {
   preco_custo: number
   preco_venda: number
   validade: string | null
+  categoria: string
 }
 
 export type ItemVenda = {
@@ -25,6 +26,8 @@ export type Venda = {
   criado_em: string
   venda_itens: ItemVenda[]
 }
+
+export const CATEGORIAS_PADRAO = ['Doces', 'Salgadinhos', 'Bebidas', 'Higiene e limpeza', 'Outros']
 
 export const R = (n: number) =>
   Number(n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })

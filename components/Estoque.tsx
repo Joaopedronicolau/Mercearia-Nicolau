@@ -2,15 +2,16 @@
 
 import { useState } from 'react'
 import { getSupabase } from '@/lib/supabase'
-import { R, num, dataBR, diasParaVencer, type Produto } from '@/lib/tipos'
+import { R, num, dataBR, diasParaVencer, CATEGORIAS_PADRAO, type Produto } from '@/lib/tipos'
 
-type Form = { nome: string; quantidade: string; minimo: string; custo: string; venda: string; validade: string }
-const VAZIO: Form = { nome: '', quantidade: '', minimo: '3', custo: '', venda: '', validade: '' }
+type Form = { nome: string; quantidade: string; minimo: string; custo: string; venda: string; validade: string; categoria: string }
+const VAZIO: Form = { nome: '', quantidade: '', minimo: '3', custo: '', venda: '', validade: '', categoria: 'Outros' }
 
 export default function Estoque({ produtos, onChange }: { produtos: Produto[]; onChange: () => void }) {
   const [form, setForm] = useState<Form>(VAZIO)
   const [editId, setEditId] = useState<string | null>(null)
   const [busca, setBusca] = useState('')
+  const [filtro, setFiltro] = useState('Todas')
   const [erro, setErro] = useState('')
 
   const set = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -21,6 +22,7 @@ export default function Estoque({ produtos, onChange }: { produtos: Produto[]; o
     setErro('')
     const dados = {
       nome: form.nome.trim(),
+      categoria: form.categoria.trim() || 'Outros',
       quantidade: Math.max(0, Math.floor(num(form.quantidade))),
       estoque_minimo: Math.max(0, Math.floor(num(form.minimo))),
       preco_custo: num(form.custo),
@@ -41,7 +43,7 @@ export default function Estoque({ produtos, onChange }: { produtos: Produto[]; o
     setEditId(p.id)
     setForm({
       nome: p.nome, quantidade: String(p.quantidade), minimo: String(p.estoque_minimo),
-      custo: String(p.preco_custo), venda: String(p.preco_venda), validade: p.validade ?? '',
+      custo: String(p.preco_custo), venda: String(p.preco_venda), validade: p.validade ?? '', categoria: p.categoria ?? '',
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -61,7 +63,11 @@ export default function Estoque({ produtos, onChange }: { produtos: Produto[]; o
     onChange()
   }
 
-  const lista = produtos.filter((p) => p.nome.toLowerCase().includes(busca.toLowerCase()))
+  const usadas = Array.from(new Set(produtos.map((p) => p.categoria))).sort()
+  const sugestoes = [...CATEGORIAS_PADRAO, ...usadas.filter((c) => !CATEGORIAS_PADRAO.includes(c))]
+  const lista = produtos.filter(
+    (p) => p.nome.toLowerCase().includes(busca.toLowerCase()) && (filtro === 'Todas' || p.categoria === filtro)
+  )
 
   return (
     <section className="lg:grid lg:grid-cols-[380px_1fr] lg:items-start lg:gap-6">
@@ -79,6 +85,10 @@ export default function Estoque({ produtos, onChange }: { produtos: Produto[]; o
           <div><label className="rotulo">Preço de venda (R$)</label>
             <input className="campo" inputMode="decimal" value={form.venda} onChange={set('venda')} /></div>
         </div>
+        <label className="rotulo">Categoria</label>
+        <select className="campo" value={form.categoria} onChange={(e) => setForm({ ...form, categoria: e.target.value })}>
+          {sugestoes.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
         <label className="rotulo">Validade (opcional)</label>
         <input className="campo" type="date" value={form.validade} onChange={set('validade')} />
         {erro && <div className="erro">{erro}</div>}
@@ -90,6 +100,13 @@ export default function Estoque({ produtos, onChange }: { produtos: Produto[]; o
 
       <div>
       <input className="campo mb-3" placeholder="🔍 Buscar produto" value={busca} onChange={(e) => setBusca(e.target.value)} />
+      {usadas.length > 1 && (
+        <div className="mb-3 flex flex-wrap gap-2">
+          {['Todas', ...usadas].map((c) => (
+            <button key={c} className={filtro === c ? 'btn btn-p' : 'btn btn-g btn-p'} onClick={() => setFiltro(c)}>{c}</button>
+          ))}
+        </div>
+      )}
 
       {lista.length === 0 && <p className="py-6 text-center text-gray-700">Nenhum produto ainda. Cadastre o primeiro acima.</p>}
 
@@ -106,7 +123,7 @@ export default function Estoque({ produtos, onChange }: { produtos: Produto[]; o
                   <span className="tag-amarela">vence em {dias} {dias === 1 ? 'dia' : 'dias'}</span>
                 )}
                 <div className="text-sm text-gray-700">
-                  Custo {R(p.preco_custo)} · Venda {R(p.preco_venda)}
+                  {p.categoria} · Custo {R(p.preco_custo)} · Venda {R(p.preco_venda)}
                   {p.validade && ` · Validade ${dataBR(p.validade)}`}
                 </div>
               </div>
